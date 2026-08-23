@@ -1,0 +1,116 @@
+{
+  "_version": "1.86.0",
+  "sap.app": {
+    "id": "ccb.org.aportessegsoc",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.31.1",
+      "toolsId": "dab77c10-acef-4303-a4b5-8a5d00aa5a5a"
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "aportsegsocsemObj-show": {
+          "semanticObject": "aportsegsocsemObj",
+          "action": "show",
+          "title": "{{aportsegsocsemObj-show.flpTitle}}",
+          "subTitle": "{{aportsegsocsemObj-show.flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.151.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "ccb.org.aportessegsoc.i18n.i18n"
+        }
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "transition": "slide",
+        "type": "View",
+        "viewType": "XML",
+        "path": "ccb.org.aportessegsoc.view",
+        "async": true,
+        "viewPath": "ccb.org.aportessegsoc.view"
+      },
+      "routes": [
+        {
+          "name": "RouteViewini",
+          "pattern": ":?query:",
+          "target": [
+            "TargetViewini"
+          ]
+        }
+      ],
+      "targets": {
+        "TargetViewini": {
+          "id": "Viewini",
+          "name": "Viewini"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "ccb.org.aportessegsoc.view.App",
+      "type": "XML",
+      "id": "App",
+      "async": true
+    }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "ccborgaportessegsoc"
+  }
+}
