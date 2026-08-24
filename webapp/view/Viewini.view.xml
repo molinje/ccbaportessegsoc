@@ -26,6 +26,31 @@
 
 
             </form:SimpleForm>
+
+            <Table id="tblAportesSegSocial"
+                items="{globalData>/aportesSegSocial}"
+                noDataText="No hay aportes de seguridad social disponibles">
+                <columns>
+                    <Column>
+                        <Text text="Año" />
+                    </Column>
+                    <Column>
+                        <Text text="Periodo" />
+                    </Column>
+                    <Column>
+                        <Text text="Documento" />
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{globalData>Gjahr}" />
+                            <Text text="{globalData>Perio}" />
+                            <Link text="{globalData>Documento}" press="onVerDocumento" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
         </content>
         <footer>
             <Bar>

@@ -37,8 +37,9 @@ sap.ui.define([
 
             // Crear modelo global para datos del servicio
             var oGlobalDataModel = new JSONModel({
-                userLogin: oUserData,  // Datos del usuario actual (Work Zone / Launchpad)
-                userData: null         // Respuesta del servicio DatosBasicosCertLabSet
+                userLogin: oUserData,      // Datos del usuario actual (Work Zone / Launchpad)
+                userData: null,            // Respuesta del servicio DatosBasicosCertLabSet
+                aportesSegSocial: []       // Certificados/PDFs de Aportes de Seguridad Social (AporteSeguridadSocialSet)
             });
             this.setModel(oGlobalDataModel, "globalData");
 
@@ -51,7 +52,17 @@ sap.ui.define([
                     oGlobalDataModel.setProperty("/userData", oData);
                     if (!oData || !oData.d) {
                         console.error("Datos del empleado no disponibles");
+                        return;
                     }
+
+                    // Cargar una única vez el listado de aportes de seguridad social del empleado
+                    return oBackendService.getAportesSegSocial(oData.d.Pernr)
+                        .then(function (aAportesSegSocial) {
+                            oGlobalDataModel.setProperty("/aportesSegSocial", aAportesSegSocial);
+                        })
+                        .catch(function (oError) {
+                            console.error("Error al consultar los aportes de seguridad social:", oError);
+                        });
                 })
                 .catch(function (oError) {
                     console.error("Error al consultar los datos del empleado:", oError);

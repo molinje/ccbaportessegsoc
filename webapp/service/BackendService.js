@@ -9,6 +9,9 @@ sap.ui.define([
         // del destination "DestToSAP_QAS" (ruta mapeada en xs-app.json / ui5.yaml)
         _datosBasicosUrl: "/sap/opu/odata/sap/ZHCM_CERTIFICADOS_PERSONAL_WD_SRV/DatosBasicosCertLabSet",
 
+        // Certificados/PDFs de Aportes de Seguridad Social del empleado (filtrado por Pernr)
+        _aporteSegSocialUrl: "/sap/opu/odata/sap/ZHCM_CERTIFICADOS_PERSONAL_WD_SRV/AporteSeguridadSocialSet",
+
         /**
          * Retorna la URL base de la app, respetando el subpath con el que fue
          * desplegada (html5-apps-repo / Work Zone), igual que en ccbcertlaborales.
@@ -30,6 +33,47 @@ sap.ui.define([
             var sUrl = this._getAppBase() + this._datosBasicosUrl + "('" + sId + "')";
 
             return this._executeGet(sUrl, { "$format": "json" });
+        },
+
+        /**
+         * Consulta los certificados/PDFs de aportes de seguridad social del empleado
+         * GET AporteSeguridadSocialSet?$filter=Pernr eq '<pernr>'&$format=json
+         * @param {string} sPernr - Número de empleado (Pernr)
+         * @returns {Promise<Array<{Pernr: string, Gjahr: string, Perio: string, Archivo: string, Documento: string}>>}
+         * Promise que resuelve con una colección plana de los aportes; "Documento" trae únicamente
+         * el nombre del archivo (sin la ruta de red) extraído de "Archivo"
+         */
+        getAportesSegSocial: function (sPernr) {
+            var that = this;
+            var sUrl = this._getAppBase() + this._aporteSegSocialUrl;
+            var sFilter = "Pernr eq '" + sPernr + "'";
+
+            return this._executeGet(sUrl, { "$filter": sFilter, "$format": "json" })
+                .then(function (oData) {
+                    var aResults = (oData && oData.d && oData.d.results) || [];
+                    return aResults.map(function (oItem) {
+                        return {
+                            Pernr: oItem.Pernr,
+                            Gjahr: oItem.Gjahr,
+                            Perio: oItem.Perio,
+                            Archivo: oItem.Archivo,
+                            Documento: that._getFileName(oItem.Archivo)
+                        };
+                    });
+                });
+        },
+
+        /**
+         * Extrae solo el nombre del archivo (sin la ruta de red) de un valor tipo
+         * "\\CAMARA_NT\SYS\INTEQAS\2024IR201980.PDF" -> "2024IR201980.PDF"
+         * @param {string} sArchivo - Ruta completa del archivo devuelta por el servicio
+         * @returns {string} Nombre del archivo
+         * @private
+         */
+        _getFileName: function (sArchivo) {
+            var sPath = String(sArchivo || "");
+            var aParts = sPath.split(/[\\/]/);
+            return aParts[aParts.length - 1] || "";
         },
 
         /**
