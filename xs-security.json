@@ -5,7 +5,7 @@
   "role-templates": [],
   "oauth2-configuration": {
     "redirect-uris": [
-      "https://ccb-rrhh-aportessegsoc.cfapps.us10.hana.ondemand.com/**"
+      "https://ccb-rrhh-aportessegsoc.cfapps.us10-001.hana.ondemand.com/**"
     ]
   }
 }
