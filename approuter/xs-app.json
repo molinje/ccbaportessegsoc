@@ -1,7 +1,13 @@
 {
-  "welcomeFile": "/index.html",
+  "welcomeFile": "/ccborgaportessegsoc/index.html",
   "authenticationMethod": "route",
   "routes": [
+    {
+      "source": "^/user-api(.*)$",
+      "target": "$1",
+      "service": "sap-approuter-userapi",
+      "authenticationType": "xsuaa"
+    },
     {
       "source": "^/sap/opu/odata/(.*)$",
       "target": "/sap/opu/odata/$1",

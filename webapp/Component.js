@@ -112,18 +112,14 @@ sap.ui.define([
         },
 
         /**
-         * Consulta "/user-api/currentUser", endpoint que expone @sap/approuter con los datos del
-         * usuario ya autenticado (ruta a nivel raíz del App Router, protegida con authenticationType
-         * "xsuaa" — ver approuter/xs-app.json), y arma el mismo shape {id, email, fullName} que antes
-         * entregaba sap.ushell UserInfo.
+         * Consulta "/user-api/currentUser", el "User API Service" que expone @sap/approuter con los
+         * datos del usuario ya autenticado — requiere la ruta dedicada con "service":
+         * "sap-approuter-userapi" en approuter/xs-app.json (colocada ANTES del catch-all hacia
+         * html5-apps-repo-rt; si no, el catch-all se la come primero y nunca llega a este servicio).
+         * Arma el mismo shape {id, email, fullName} que antes entregaba sap.ushell UserInfo.
          *
-         * IMPORTANTE (pendiente de validar en el primer despliegue real): el nombre exacto del/los
-         * campo(s) con el correo dentro de la respuesta depende del atributo que se mapee en la
-         * Application de IAS (Paso 4 del documento de arquitectura: mail / uid / personIdExternal) y
-         * de cómo XSUAA lo exponga en el JWT. Aquí se prueban varias claves conocidas (email/mail,
-         * name/given_name/family_name) como fallback; conviene abrir "/user-api/currentUser"
-         * directamente en el navegador tras el deploy para confirmar el shape real y, si el correo
-         * viene con otro nombre de campo, ajustarlo aquí.
+         * Shape real confirmado de la respuesta (SAP Help - "User API Service"): campos
+         * "firstname", "lastname", "email", "name" y "displayName".
          * @returns {Promise<{id: string, email: string, fullName: string}>}
          * @private
          */
@@ -140,14 +136,13 @@ sap.ui.define([
                         try {
                             var oCurrentUser = xhr.responseText ? JSON.parse(xhr.responseText) : {};
 
-                            var sEmail = oCurrentUser.email || oCurrentUser.mail || "";
-                            var sFullName = oCurrentUser.name || [
-                                oCurrentUser.firstname || oCurrentUser.given_name,
-                                oCurrentUser.lastname || oCurrentUser.family_name
+                            var sFullName = oCurrentUser.displayName || oCurrentUser.name || [
+                                oCurrentUser.firstname,
+                                oCurrentUser.lastname
                             ].filter(Boolean).join(" ");
 
-                            oUserData.id = oCurrentUser.logonName || oCurrentUser.name || sEmail || "";
-                            oUserData.email = sEmail;
+                            oUserData.id = oCurrentUser.name || oCurrentUser.email || "";
+                            oUserData.email = oCurrentUser.email || "";
                             oUserData.fullName = sFullName;
                         } catch (e) {
                             console.error("No fue posible interpretar la respuesta de /user-api/currentUser:", e);
