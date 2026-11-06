@@ -1,0 +1,11 @@
+_schema-version: "3.2"
+ID: ccborgaportessegsoc.prod
+extends: ccborgaportessegsoc
+modules:
+- name: ccborgaportessegsoc-approuter
+  parameters:
+    host: ccb-rrhh-aportessegsoc-prod
+resources:
+- name: ccborgaportessegsoc-uaa
+  parameters:
+    path: ./xs-security-prod.json
